@@ -1,82 +1,71 @@
 #include <iostream>
-#include <queue>
-#include <algorithm>
-#include <vector>
 #include <string>
+#include <vector>
+#include <queue>
+#include <set>
 
 using namespace std;
 
-#define endl '\n'
+const int dx[] = { 1, -1, 0, 0 };
+const int dy[] = { 0, 0, 1, -1 };
 
-int board[25][25];
-int visit[25][25] = { 0, };
-
-int dx[4] = {0, 0, -1, 1};
-int dy[4] = {1, -1, 0, 0};
-
-int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
-
-    int N;
-    cin >> N;
-    queue<pair<int, int>> q;
-    vector<int> v;
-
-    //보드입력
-    string s;
-    for (int i = 0; i < N; i++) {
-        cin >> s;
-        for (int j = 0; j < N; j++) {
-            board[i][j] = s[j] - '0';
-        }
+int main()
+{
+    int n, m = 0;
+    cin >> n;
+    multiset<int> set;
+    vector<string> map;
+    for (int i = 0; i < n; ++i) {
+        string info;
+        cin >> info;
+        map.push_back(info);
     }
 
-    int danji = 0; // 단지 번호
-    for (int i = 0; i < N; i++) {
-        for (int j = 0; j < N; j++) {
+    bool visited[25][25] = { false, };
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            if (visited[i][j])
+                continue;
 
-            // 집을 발견하고 아직 방문하지 않았을 경우
-            if (board[i][j] == 1 && visit[i][j] == 0) {
-                danji++;
-                int danjiCnt = 1;
-                q.push(make_pair(i, j));
-                visit[i][j] = danji;
-                
-                while (!q.empty()) {
-                    int y = q.front().first;
-                    int x = q.front().second;
-                    q.pop();
+            if (map[i][j] == '0')
+                continue;
 
-                    for (int k = 0; k < 4; k++) {
-                        int ny = y + dy[k];
-                        int nx = x + dx[k];
+            m++;
+            queue<pair<int, int>> q;
+            q.push(make_pair(i, j));
+            visited[i][j] = true;
 
-                        //범위체크
-                        if (!(0 <= ny && ny < N)) continue;
-                        if (!(0 <= nx && nx < N)) continue;
+            int count = 0;
+            while (!q.empty()) {
+                pair<int, int> cur = q.front();
+                q.pop();
+                count++;
 
-                        //집이있고, 미방문이면
-                        if (board[ny][nx] == 1 && !visit[ny][nx]) {
-                            q.push(make_pair(ny, nx));
-                            visit[ny][nx] = danji;
-                            danjiCnt++;
-                        }
-                    }
+                for (int i = 0; i < 4; i++) {
+                    int nx = cur.first + dx[i];
+                    int ny = cur.second + dy[i];
+
+                    if (nx < 0 || nx >= n)
+                        continue;
+
+                    if (ny < 0 || ny >= n)
+                        continue;
+
+                    if (visited[nx][ny] || map[nx][ny] == '0')
+                        continue;
+
+                    q.push(make_pair(nx, ny));
+                    visited[nx][ny] = true;
                 }
-                // 단지 내 집의 수 벡터에 추가
-                v.push_back(danjiCnt);
             }
+            set.insert(count);
         }
     }
 
-    // 답 출력
-    cout << danji << endl;
-
-    sort(v.begin(), v.end());
-    for (int ans : v) {
-        cout << ans << endl;
+    cout << m << '\n';
+    for (int i : set) {
+        cout << i << '\n';
     }
-    
+
     return 0;
 }
