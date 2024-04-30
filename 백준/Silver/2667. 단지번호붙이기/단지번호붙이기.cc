@@ -56,8 +56,8 @@ int main() {
                         if (!(0 <= ny && ny < N)) continue;
                         if (!(0 <= nx && nx < N)) continue;
 
-                        //집이있고, 방문을 안해서 0이면
-                        if (board[ny][nx] == 1 && visit[ny][nx] == 0) {
+                        //집이있고, 미방문이면
+                        if (board[ny][nx] == 1 && !visit[ny][nx]) {
                             q.push(make_pair(ny, nx));
                             visit[ny][nx] = danji;
                             danjiCnt++;
